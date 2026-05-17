@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>evamyuu.exe</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; image-rendering: pixelated; }
+
+    :root {
+      --win-blue: #0058a3;
+      --win-blue-light: #3a93ff;
+      --win-titlebar: linear-gradient(to right, #0a246a, #a6caf0);
+      --win-titlebar-inactive: linear-gradient(to right, #7a96df, #c8d4f0);
+      --win-body: #ece9d8;
+      --win-border: #0055ea;
+      --win-shadow: 2px 2px 0 #000;
+      --pink: #FFB7C5;
+      --pink-dark: #e8839a;
+      --sky: #87ceeb;
+    }
+
+    body {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px;
+      background: var(--sky);
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* SKY & CLOUDS */
+    .sky {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(180deg, #87ceeb 0%, #b8e4f7 60%, #d4f5a0 100%);
+      z-index: 0;
+    }
+
+    .cloud {
+      position: absolute;
+      background: white;
+      border-radius: 50px;
+      opacity: 0.9;
+      animation: cloudMove linear infinite;
+    }
+    .cloud::before, .cloud::after {
+      content: '';
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+    }
+    .cloud1 { width: 80px; height: 30px; top: 8%; left: -100px; animation-duration: 30s; }
+    .cloud1::before { width: 40px; height: 40px; top: -20px; left: 10px; }
+    .cloud1::after { width: 25px; height: 25px; top: -12px; left: 40px; }
+    .cloud2 { width: 120px; height: 40px; top: 18%; left: -150px; animation-duration: 45s; animation-delay: -15s; }
+    .cloud2::before { width: 60px; height: 60px; top: -30px; left: 15px; }
+    .cloud2::after { width: 40px; height: 40px; top: -20px; left: 60px; }
+    .cloud3 { width: 60px; height: 25px; top: 5%; left: -80px; animation-duration: 35s; animation-delay: -20s; }
+    .cloud3::before { width: 30px; height: 30px; top: -15px; left: 8px; }
+    @keyframes cloudMove { from { left: -200px; } to { left: 110%; } }
+
+    /* GRASS */
+    .grass {
+      position: fixed;
+      bottom: 36px;
+      left: 0; right: 0;
+      height: 60px;
+      background: linear-gradient(180deg, #5ab533 0%, #3d8c1e 100%);
+      z-index: 1;
+    }
+    .grass::before {
+      content: '';
+      position: absolute;
+      top: -8px; left: 0; right: 0;
+      height: 16px;
+      background: repeating-linear-gradient(90deg, #5ab533 0px, #5ab533 8px, #6dc93e 8px, #6dc93e 16px);
+      clip-path: polygon(0 100%, 4px 0, 8px 100%, 12px 0, 16px 100%, 20px 0, 24px 100%, 28px 0, 32px 100%, 36px 0, 40px 100%, 44px 0, 48px 100%, 52px 0, 56px 100%, 60px 0, 64px 100%, 68px 0, 72px 100%, 76px 0, 80px 100%, 84px 0, 88px 100%, 92px 0, 96px 100%, 100% 0, 100% 100%);
+    }
+
+    /* DESKTOP */
+    .desktop {
+      position: fixed;
+      inset: 0;
+      bottom: 36px;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    /* WINDOW */
+    .window {
+      background: var(--win-body);
+      border: 2px solid var(--win-border);
+      border-radius: 8px 8px 4px 4px;
+      box-shadow: 4px 4px 0 #000, inset 1px 1px 0 rgba(255,255,255,0.8);
+      min-width: 180px;
+      position: relative;
+      animation: windowPop 0.3s ease backwards;
+      cursor: default;
+    }
+    @keyframes windowPop {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .window:nth-child(1) { animation-delay: 0.1s; }
+    .window:nth-child(2) { animation-delay: 0.2s; }
+    .window:nth-child(3) { animation-delay: 0.3s; }
+    .window:nth-child(4) { animation-delay: 0.4s; }
+
+    .titlebar {
+      background: var(--win-titlebar);
+      border-radius: 6px 6px 0 0;
+      padding: 4px 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+    }
+    .titlebar-title {
+      color: white;
+      font-size: 7px;
+      text-shadow: 1px 1px 0 #000;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .titlebar-icon { width: 14px; height: 14px; }
+    .titlebar-btns {
+      display: flex;
+      gap: 2px;
+    }
+    .btn-win {
+      width: 16px; height: 14px;
+      border: 1px solid rgba(0,0,0,0.5);
+      border-radius: 2px;
+      font-size: 7px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Press Start 2P', monospace;
+    }
+    .btn-min { background: #e8c93e; }
+    .btn-max { background: #5ab533; }
+    .btn-close { background: #e84c3d; color: white; }
+    .btn-win:hover { filter: brightness(1.2); }
+
+    .win-content {
+      padding: 10px;
+    }
+
+    /* ABOUT WINDOW */
+    .about-window {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .sprite-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      min-width: 80px;
+      border-right: 2px solid #aaa;
+      padding-right: 10px;
+    }
+    .sprite {
+      width: 72px;
+      height: 100px;
+      background: #c8e6f8;
+      border: 2px solid #7aa8c4;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+    /* pixel art character */
+    .sprite-char {
+      width: 32px;
+      height: 64px;
+      position: relative;
+      image-rendering: pixelated;
+    }
+    .sprite-label {
+      font-size: 6px;
+      color: #333;
+      text-align: center;
+    }
+    .all-programs {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 6px;
+      color: #000;
+      background: #d4d0c8;
+      border: 1px solid #808080;
+      padding: 2px 4px;
+      cursor: pointer;
+      margin-top: 4px;
+    }
+    .all-programs:hover { background: #316ac5; color: white; }
+
+    .about-info {
+      flex: 1;
+    }
+    .info-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 4px;
+      margin-bottom: 5px;
+      font-size: 7px;
+      color: #1a1a1a;
+      line-height: 1.6;
+    }
+    .info-row::before {
+      content: '•';
+      color: var(--pink-dark);
+      flex-shrink: 0;
+    }
+    .info-bio {
+      margin-top: 8px;
+      font-size: 6px;
+      color: #444;
+      text-align: center;
+      line-height: 2;
+      border-top: 1px dashed #aaa;
+      padding-top: 6px;
+    }
+    .heart { color: var(--pink-dark); }
+
+    /* LOG OFF / TURN OFF */
+    .action-bar {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-top: 2px solid #aaa;
+      background: #d4d0c8;
+    }
+    .action-btn {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 6px;
+      font-family: 'Press Start 2P', monospace;
+      background: #ece9d8;
+      border: 2px solid #7a7a7a;
+      border-radius: 3px;
+      padding: 3px 6px;
+      cursor: pointer;
+      color: #000;
+    }
+    .action-btn:hover { background: #316ac5; color: white; border-color: #003acc; }
+
+    /* LIST WINDOWS */
+    .list-window ul {
+      list-style: none;
+      padding: 0;
+    }
+    .list-window ul li {
+      font-size: 7px;
+      padding: 3px 4px;
+      color: #1a1a1a;
+      border-bottom: 1px solid #d0ccc0;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      line-height: 1.8;
+    }
+    .list-window ul li::before {
+      content: '▸';
+      color: var(--pink-dark);
+      font-size: 6px;
+    }
+    .list-window ul li:last-child { border-bottom: none; }
+    .list-window ul li:hover { background: #316ac5; color: white; }
+    .list-window ul li:hover::before { color: white; }
+
+    /* SKILLS WINDOW */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      padding: 4px;
+    }
+    .skill-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      font-size: 5px;
+      color: #333;
+      text-align: center;
+    }
+    .skill-item img {
+      width: 28px;
+      height: 28px;
+      image-rendering: auto;
+    }
+
+    /* TASKBAR */
+    .taskbar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: 36px;
+      background: linear-gradient(180deg, #1f5eb5 0%, #2372d8 8%, #1660c8 90%, #0a4aaa 100%);
+      border-top: 2px solid #5a9ae0;
+      display: flex;
+      align-items: center;
+      z-index: 100;
+      box-shadow: 0 -1px 0 #0a3a8a;
+    }
+
+    .start-btn {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      height: 100%;
+      padding: 0 12px;
+      background: linear-gradient(180deg, #5ab533 0%, #3e9e1a 40%, #2d8010 100%);
+      border-radius: 0 12px 12px 0;
+      border-right: 2px solid #1a6010;
+      cursor: pointer;
+      color: white;
+      font-size: 9px;
+      font-family: 'Press Start 2P', monospace;
+      text-shadow: 1px 1px 0 #000;
+      font-style: italic;
+    }
+    .start-btn:hover { filter: brightness(1.1); }
+    .start-btn img { width: 20px; height: 20px; }
+
+    .taskbar-divider { width: 2px; height: 24px; background: rgba(255,255,255,0.2); margin: 0 4px; }
+
+    .taskbar-items {
+      display: flex;
+      gap: 2px;
+      flex: 1;
+      padding: 0 4px;
+    }
+    .taskbar-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 6px;
+      font-family: 'Press Start 2P', monospace;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 2px;
+      padding: 3px 8px;
+      color: white;
+      cursor: pointer;
+      text-shadow: 1px 1px 0 #000;
+      white-space: nowrap;
+    }
+    .taskbar-item.active { background: rgba(0,0,0,0.3); border-color: rgba(0,0,0,0.4); }
+    .taskbar-item:hover { background: rgba(255,255,255,0.25); }
+
+    .taskbar-clock {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 0 12px;
+      font-size: 7px;
+      color: white;
+      text-shadow: 1px 1px 0 #000;
+      background: rgba(0,0,0,0.2);
+      height: 100%;
+      border-left: 1px solid rgba(255,255,255,0.2);
+      white-space: nowrap;
+    }
+
+    /* PIXEL SPRITE via CSS */
+    .pixel-evelin {
+      width: 64px;
+      height: 90px;
+      position: relative;
+      image-rendering: pixelated;
+    }
+    .pixel-evelin img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    /* scrollbar */
+    ::-webkit-scrollbar { width: 12px; }
+    ::-webkit-scrollbar-track { background: #d4d0c8; border: 1px solid #aaa; }
+    ::-webkit-scrollbar-thumb { background: linear-gradient(90deg, #316ac5, #5a9ae0); border: 1px solid #0a246a; }
+  </style>
+</head>
+<body>
+
+<div class="sky">
+  <div class="cloud cloud1"></div>
+  <div class="cloud cloud2"></div>
+  <div class="cloud cloud3"></div>
+</div>
+
+<div class="grass"></div>
+
+<div class="desktop">
+
+  <!-- ABOUT WINDOW -->
+  <div class="window" style="width: 320px; animation-delay: 0.1s;">
+    <div class="titlebar">
+      <div class="titlebar-title">
+        <span>💻</span>
+        <span>evamyuu.exe</span>
+      </div>
+      <div class="titlebar-btns">
+        <div class="btn-win btn-min">_</div>
+        <div class="btn-win btn-max">□</div>
+        <div class="btn-win btn-close">✕</div>
+      </div>
+    </div>
+    <div class="win-content">
+      <div class="about-window">
+        <div class="sprite-area">
+          <div class="sprite">
+            <img src="https://media1.tenor.com/m/gKrTnnGi5LgAAAAC/luffy-mugen.gif" style="width:64px; height:90px; object-fit:cover; image-rendering:pixelated;"/>
+          </div>
+          <div class="sprite-label">evamyuu</div>
+          <div class="all-programs">All Programs ▶</div>
+        </div>
+        <div class="about-info">
+          <div class="info-row">Full-Stack Dev</div>
+          <div class="info-row">São Paulo, BR 🌸</div>
+          <div class="info-row">she/her</div>
+          <div class="info-row">FIAP student</div>
+          <div class="info-row">@ Vivo 💜</div>
+          <div class="info-bio">
+            a dev who reads everything,<br/>
+            questions everything<br/>
+            & builds with empathy<br/>
+            <span class="heart">♥</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="action-bar">
+      <a href="https://www.linkedin.com/in/evelin-cordeiro/" target="_blank" style="text-decoration:none;">
+        <div class="action-btn">🔗 LinkedIn</div>
+      </a>
+      <a href="https://trailblazer.salesforce.com/id/evelin" target="_blank" style="text-decoration:none;">
+        <div class="action-btn">☁️ Trailhead</div>
+      </a>
+    </div>
+  </div>
+
+  <div style="display:flex; flex-direction:column; gap:12px;">
+
+    <!-- LIKES WINDOW -->
+    <div class="window list-window" style="width: 180px; animation-delay: 0.2s;">
+      <div class="titlebar">
+        <div class="titlebar-title"><span>🌸</span><span>likes.exe</span></div>
+        <div class="titlebar-btns">
+          <div class="btn-win btn-min">_</div>
+          <div class="btn-win btn-max">□</div>
+          <div class="btn-win btn-close">✕</div>
+        </div>
+      </div>
+      <div class="win-content" style="padding: 6px;">
+        <ul>
+          <li>One Piece 🏴‍☠️</li>
+          <li>UX & empathy</li>
+          <li>clean code</li>
+          <li>anime</li>
+          <li>Feijão 🐱</li>
+          <li>learning</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- DISLIKES WINDOW -->
+    <div class="window list-window" style="width: 180px; animation-delay: 0.3s;">
+      <div class="titlebar">
+        <div class="titlebar-title"><span>💔</span><span>dislikes.exe</span></div>
+        <div class="titlebar-btns">
+          <div class="btn-win btn-min">_</div>
+          <div class="btn-win btn-max">□</div>
+          <div class="btn-win btn-close">✕</div>
+        </div>
+      </div>
+      <div class="win-content" style="padding: 6px;">
+        <ul>
+          <li>bad UX</li>
+          <li>no documentation</li>
+          <li>rushed deploys</li>
+          <li>waking up late</li>
+          <li>hot weather ☀️</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SKILLS WINDOW -->
+  <div class="window" style="width: 200px; animation-delay: 0.4s;">
+    <div class="titlebar">
+      <div class="titlebar-title"><span>⚙️</span><span>skills.exe</span></div>
+      <div class="titlebar-btns">
+        <div class="btn-win btn-min">_</div>
+        <div class="btn-win btn-max">□</div>
+        <div class="btn-win btn-close">✕</div>
+      </div>
+    </div>
+    <div class="win-content">
+      <div class="skills-grid">
+        <div class="skill-item">
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/salesforce/salesforce-original.svg"/>
+          <span>Salesforce</span>
+        </div>
+        <div class="skill-item">
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/java/java-original.svg"/>
+          <span>Java</span>
+        </div>
+        <div class="skill-item">
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/spring/spring-original.svg"/>
+          <span>Spring</span>
+        </div>
+        <div class="skill-item">
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-original.svg"/>
+          <span>JS</span>
+        </div>
+        <div class="skill-item">
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/flutter/flutter-original.svg"/>
+          <span>Flutter</span>
+        </div>
+        <div class="skill-item">
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/html5/html5-original.svg"/>
+          <span>HTML</span>
+        </div>
+        <div class="skill-item">
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/css3/css3-original.svg"/>
+          <span>CSS</span>
+        </div>
+        <div class="skill-item">
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/figma/figma-original.svg"/>
+          <span>Figma</span>
+        </div>
+        <div class="skill-item">
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/git/git-original.svg"/>
+          <span>Git</span>
+        </div>
+        <div class="skill-item">
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/azure/azure-original.svg"/>
+          <span>Azure</span>
+        </div>
+        <div class="skill-item">
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/jira/jira-original.svg"/>
+          <span>Jira</span>
+        </div>
+        <div class="skill-item">
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/dart/dart-original.svg"/>
+          <span>Dart</span>
+        </div>
+      </div>
+      <div style="border-top: 1px dashed #aaa; margin-top: 8px; padding-top: 6px; text-align:center; font-size:5px; color:#444; line-height:2;">
+        $ git commit -m "care about your craft"<br/>
+        <span style="color:var(--pink-dark)"># The Pragmatic Programmer ⌨︎⋆₊˚⊹♡</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TASKBAR -->
+<div class="taskbar">
+  <div class="start-btn">
+    <img src="https://cdn3.emoji.gg/emojis/2696-hellokitty-sparkle.png" alt="hk"/>
+    start
+  </div>
+  <div class="taskbar-divider"></div>
+  <div class="taskbar-items">
+    <div class="taskbar-item active">💻 evamyuu.exe</div>
+    <div class="taskbar-item">🌸 likes.exe</div>
+    <div class="taskbar-item">💔 dislikes.exe</div>
+    <div class="taskbar-item">⚙️ skills.exe</div>
+  </div>
+  <div class="taskbar-clock" id="clock">🕐 00:00</div>
+</div>
+
+<script>
+  function updateClock() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2, '0');
+    const m = String(now.getMinutes()).padStart(2, '0');
+    document.getElementById('clock').textContent = `🕐 ${h}:${m}`;
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+
+  // window drag
+  document.querySelectorAll('.window').forEach(win => {
+    const titlebar = win.querySelector('.titlebar');
+    let isDragging = false, startX, startY, startLeft, startTop;
+
+    win.style.position = 'absolute';
+
+    titlebar.addEventListener('mousedown', e => {
+      isDragging = true;
+      startX = e.clientX;
+      startY = e.clientY;
+      const rect = win.getBoundingClientRect();
+      startLeft = rect.left;
+      startTop = rect.top;
+      win.style.zIndex = 10;
+    });
+
+    document.addEventListener('mousemove', e => {
+      if (!isDragging) return;
+      win.style.left = (startLeft + e.clientX - startX) + 'px';
+      win.style.top = (startTop + e.clientY - startY) + 'px';
+    });
+
+    document.addEventListener('mouseup', () => {
+      isDragging = false;
+    });
+
+    win.querySelector('.btn-close').addEventListener('click', () => {
+      win.style.display = 'none';
+    });
+    win.querySelector('.btn-min').addEventListener('click', () => {
+      win.style.display = win.style.display === 'none' ? 'block' : 'none';
+    });
+  });
+</script>
+
+</body>
+</html>
